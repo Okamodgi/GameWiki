@@ -1,5 +1,4 @@
 // SectionItemsActivity.java
-
 package com.example.gamewiki;
 
 import android.content.Intent;
@@ -8,9 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-
 import androidx.appcompat.app.AppCompatActivity;
+import android.widget.SimpleCursorAdapter;
 
 public class SectionItemsActivity extends AppCompatActivity {
 
@@ -27,7 +25,6 @@ public class SectionItemsActivity extends AppCompatActivity {
         listViewItems = findViewById(R.id.list_items);
         dbHelper = new DatabaseHelper(this);
 
-        // Получаем ID раздела, переданный из GameSectionsActivity
         sectionId = getIntent().getLongExtra("sectionId", -1);
 
         displayItems(sectionId);
@@ -36,7 +33,7 @@ public class SectionItemsActivity extends AppCompatActivity {
     private void displayItems(long sectionId) {
         Cursor cursor = dbHelper.getReadableDatabase().query(DatabaseHelper.TABLE_ITEMS,
                 new String[]{DatabaseHelper.COLUMN_ID, DatabaseHelper.COLUMN_ITEM_NAME},
-                DatabaseHelper.COLUMN_SECTION_ID + "=?",
+                DatabaseHelper.COLUMN_SECTION_ID_ITEMS + "=?",
                 new String[]{String.valueOf(sectionId)},
                 null, null, null);
 
@@ -52,7 +49,9 @@ public class SectionItemsActivity extends AppCompatActivity {
         listViewItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                openItemDetailsActivity(id);
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                long itemId = cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID));
+                openItemDetailsActivity(itemId);
             }
         });
     }

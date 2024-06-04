@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 public class ItemDetailsActivity extends AppCompatActivity {
 
     private TextView textViewItemName;
@@ -28,7 +29,6 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private void displayItemDetails(long itemId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        // Get item name
         Cursor itemCursor = db.query(DatabaseHelper.TABLE_ITEMS,
                 new String[]{DatabaseHelper.COLUMN_ITEM_NAME},
                 DatabaseHelper.COLUMN_ID + "=?",
@@ -40,16 +40,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
         }
         itemCursor.close();
 
-        // Get item description
-       /* Cursor detailsCursor = db.query(DatabaseHelper.TABLE_ITEM_DETAILS,
-                new String[]{DatabaseHelper.COLUMN_ITEM_DESCRIPTION},
-                DatabaseHelper.COLUMN_ITEM_ID + "=?",
-                new String[]{String.valueOf(itemId)},
-                null, null, null);
-        if (detailsCursor.moveToFirst()) {
-            String itemDescription = detailsCursor.getString(detailsCursor.getColumnIndex(DatabaseHelper.COLUMN_ITEM_DESCRIPTION));
-            textViewItemDescription.setText(itemDescription);
-        }
-        detailsCursor.close();*/
+        String itemDescription = dbHelper.getItemDescription(itemId);
+        textViewItemDescription.setText(itemDescription);
     }
 }
+

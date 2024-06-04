@@ -25,7 +25,6 @@ public class GameSectionsActivity extends AppCompatActivity {
         listViewSections = findViewById(R.id.list_sections);
         dbHelper = new DatabaseHelper(this);
 
-        // Получаем название игры, переданное из MainActivity
         gameName = getIntent().getStringExtra("gameName");
 
         displaySections();
@@ -43,9 +42,12 @@ public class GameSectionsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String selectedSection = (String) parent.getItemAtPosition(position);
-                Intent intent = new Intent(GameSectionsActivity.this, SectionItemsActivity.class);
-                intent.putExtra("sectionName", selectedSection);
-                startActivity(intent);
+                long sectionId = dbHelper.getSectionId(selectedSection);
+                if (sectionId != -1) { // Ensure valid sectionId
+                    Intent intent = new Intent(GameSectionsActivity.this, SectionItemsActivity.class);
+                    intent.putExtra("sectionId", sectionId);
+                    startActivity(intent);
+                }
             }
         });
     }

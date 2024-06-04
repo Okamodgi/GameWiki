@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +24,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_SECTION_NAME = "section_name";
 
     public static final String TABLE_ITEMS = "items";
-    public static final String COLUMN_ITEM_ID = "_id"; // Added COLUMN_ITEM_ID for items
+    public static final String COLUMN_ITEM_ID = "_id";
     public static final String COLUMN_SECTION_ID_ITEMS = "section_id";
     public static final String COLUMN_ITEM_NAME = "item_name";
-    
+
+    public static final String TABLE_ITEMS_DETAILS = "items_details";
+    public static final String COLUMN_ITEM_ID_DETAILS = "_id";
+    public static final String COLUMN_ITEM_DESCRIPTION = "item_description";
 
     private static final String DATABASE_CREATE_GAMES = "create table " +
             TABLE_GAMES + "(" + COLUMN_ID +
@@ -47,6 +49,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COLUMN_SECTION_ID_ITEMS + " INTEGER NOT NULL, " +
             COLUMN_ITEM_NAME + " TEXT NOT NULL);";
 
+
+    private static final String DATABASE_CREATE_ITEMS_DETAILS = "CREATE TABLE " +
+            TABLE_ITEMS_DETAILS + "(" + COLUMN_ITEM_ID_DETAILS +
+            " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_ITEM_ID + " INTEGER NOT NULL, " +
+            COLUMN_ITEM_DESCRIPTION + " TEXT NOT NULL);";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -56,6 +65,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         database.execSQL(DATABASE_CREATE_GAMES);
         database.execSQL(DATABASE_CREATE_SECTIONS);
         database.execSQL(DATABASE_CREATE_ITEMS);
+        database.execSQL(DATABASE_CREATE_ITEMS_DETAILS);
         insertInitialData(database);
     }
 
@@ -64,6 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GAMES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SECTIONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEMS_DETAILS);
         onCreate(db);
     }
 
@@ -149,5 +160,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursorSectionId.close();
         return items;
+    }
+
+    public long getSectionId(String sectionName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_SECTIONS, new String[]{COLUMN_ID},
+                COLUMN_SECTION_NAME + "=?", new String[]{sectionName}, null, null, null);
+        if (cursor.moveToFirst())
+        {
+            long sectionId = cursor.getLong(cursor.getColumnIndex(COLUMN_ID));
+            cursor.close();
+            return sectionId;
+        }
+        cursor.close(); // Always close cursor
+        return -1; // Return -1 if no section found
+    }
+
+    public String getItemDescription(long itemId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_ITEMS_DETAILS, new String[]{COLUMN_ITEM_DESCRIPTION},
+                COLUMN_ITEM_ID + "=?", new String[]{String.valueOf(itemId)}, null, null, null);
+
+        String description = "";
+
+        if (cursor.moveToFirst()) {
+            description = cursor.getString(cursor.getColumnIndex(COLUMN_ITEM_DESCRIPTION));
+        }
+
+        cursor.close();
+        return description;
     }
 }
