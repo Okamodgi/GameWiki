@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/nav_home">
+
+    <activity
+        android:id="@+id/nav_game_s"
+        android:label="Вальхейм"
+        tools:layout="@layout/activity_game_sections"/>
+
+    <activity
+        android:id="@+id/nav_sections"
+        android:label="valheim"
+        tools:layout="@layout/activity_sections_items" />
+
+    <activity
+        android:id="@+id/nav_details"
+        android:label="элементы"
+        tools:layout="@layout/activity_item_details" />
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:label="элементы"
+        tools:layout="@layout/activity_home" />
+</navigation>

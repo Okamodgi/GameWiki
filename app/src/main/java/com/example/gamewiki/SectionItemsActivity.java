@@ -1,4 +1,4 @@
-// SectionItemsActivity.java
+
 package com.example.gamewiki;
 
 import android.content.Intent;

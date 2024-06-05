@@ -1,68 +1,57 @@
 package com.example.gamewiki;
+
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
-import android.widget.SimpleCursorAdapter;
-import android.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import com.example.gamewiki.databinding.ActivityMainBinding;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ListView listView;
-    private DatabaseHelper dbHelper;
-    private SimpleCursorAdapter adapter;
-    private Toolbar toolbar;
+    private AppBarConfiguration mAppBarConfiguration;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        listView = findViewById(R.id.list_game);
-        dbHelper = new DatabaseHelper(this);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        displayGames();
-        setupListViewClickListener();
-    }
 
-    private void displayGames() {
-        Cursor cursor = dbHelper.getReadableDatabase().query(DatabaseHelper.TABLE_GAMES,
-                new String[]{DatabaseHelper.COLUMN_ID, DatabaseHelper.COLUMN_GAME_NAME},
-                null, null, null, null, null);
+        DrawerLayout drawer = binding.drawerLayout;
+       // NavigationView navigationView = binding.navView;
 
-        adapter = new SimpleCursorAdapter(
-                this,
-                android.R.layout.simple_list_item_1,
-                cursor,
-                new String[] { DatabaseHelper.COLUMN_GAME_NAME },
-                new int[] { android.R.id.text1 },
-                0);
-        listView.setAdapter(adapter);
-    }
-
-    private void setupListViewClickListener() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        Button start = (Button)findViewById(R.id.starting);
+        start.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-                String selectedGame = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_GAME_NAME));
-                openGameSectionsActivity(selectedGame);
+            public void onClick(View v) {
+
+                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                startActivity(intent);
             }
         });
-    }
 
-    private void openGameSectionsActivity(String gameName) {
-        Intent intent = new Intent(this, GameSectionsActivity.class);
-        intent.putExtra("gameName", gameName);
-        startActivity(intent);
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_home, R.id.nav_game_s, R.id.nav_sections, R.id.nav_details)
+                .setOpenableLayout(drawer)
+                .build();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        dbHelper.close();
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
     }
+
 }

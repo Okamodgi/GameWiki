@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GameWiki"
         tools:targetApi="31">
+
+        <activity android:name=".HomeActivity"/>
+        <activity
+            android:name=".ItemDetailsActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -23,7 +28,6 @@
         </activity>
         <activity android:name=".SectionItemsActivity" />
         <activity android:name=".GameSectionsActivity" />
-        <activity android:name=".ItemDetailsActivity"/>
     </application>
 
 </manifest>
