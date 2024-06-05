@@ -12,7 +12,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "games.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public static final String TABLE_GAMES = "games";
     public static final String COLUMN_ID = "_id";
@@ -177,6 +177,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return -1; // Return -1 if no section found
     }
 
+
+
     public String getItemDescription(long itemId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String itemDescription = null;
@@ -193,4 +195,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return itemDescription;
     }
+
+    public List<String> getAllItems() {
+        List<String> items = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_ITEMS, new String[]{COLUMN_ITEM_NAME},
+                null, null, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                items.add(cursor.getString(cursor.getColumnIndex(COLUMN_ITEM_NAME)));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return items;
+    }
+
+    public List<String> getAllSections() {
+        List<String> sections = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_SECTIONS, new String[]{COLUMN_SECTION_NAME},
+                null, null, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                sections.add(cursor.getString(cursor.getColumnIndex(COLUMN_SECTION_NAME)));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return sections;
+    }
+
 }

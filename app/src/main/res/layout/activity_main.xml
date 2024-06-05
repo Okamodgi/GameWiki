@@ -17,12 +17,18 @@
             app:title="Заголовок приложения"
             app:titleTextColor="@android:color/white" />
 
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:queryHint="Search here..." />
+
         <Button
-            android:layout_width="100dp"
+            android:id="@+id/starting"
+            android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:text="старт"
             android:onClick="Starting"
-            android:id="@+id/starting"/>
+            android:text="старт" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

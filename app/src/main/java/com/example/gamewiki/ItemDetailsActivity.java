@@ -4,6 +4,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ItemDetailsActivity extends AppCompatActivity {
@@ -25,6 +27,27 @@ public class ItemDetailsActivity extends AppCompatActivity {
         displayItemDetails(itemId);
     }
 
+    private void displayItemDetailsById(long itemId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor itemCursor = db.query(DatabaseHelper.TABLE_ITEMS,
+                new String[]{DatabaseHelper.COLUMN_ITEM_NAME},
+                DatabaseHelper.COLUMN_ITEM_ID + "=?",
+                new String[]{String.valueOf(itemId)},
+                null, null, null);
+
+        if (itemCursor.moveToFirst()) {
+            String itemName = itemCursor.getString(itemCursor.getColumnIndex(DatabaseHelper.COLUMN_ITEM_NAME));
+            textViewItemName.setText(itemName);
+
+            String itemDescription = dbHelper.getItemDescription(itemId);
+            textViewItemDescription.setText(itemDescription);
+        } else {
+            Toast.makeText(this, "Item not found", Toast.LENGTH_SHORT).show();
+        }
+        itemCursor.close();
+    }
+
     private void displayItemDetails(long itemId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -41,7 +64,5 @@ public class ItemDetailsActivity extends AppCompatActivity {
         itemCursor.close();
 
         String itemDescription = dbHelper.getItemDescription(itemId);
-        textViewItemDescription.setText(itemDescription);
-    }
-
+        textViewItemDescription.setText(itemDescription);}
 }
