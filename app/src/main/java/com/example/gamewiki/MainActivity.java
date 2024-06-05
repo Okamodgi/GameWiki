@@ -7,12 +7,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
     private ListView listView;
     private DatabaseHelper dbHelper;
     private SimpleCursorAdapter adapter;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -12,7 +12,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "games.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public static final String TABLE_GAMES = "games";
     public static final String COLUMN_ID = "_id";
@@ -29,7 +29,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ITEM_NAME = "item_name";
 
     public static final String TABLE_ITEMS_DETAILS = "items_details";
-    public static final String COLUMN_ITEM_ID_DETAILS = "_id";
+    public static final String COLUMN_ITEM_DETAILS_ID = "_id"; // Исправлено
+    public static final String COLUMN_ITEM_DETAILS_ITEM_ID = "item_id"; // Исправлено
     public static final String COLUMN_ITEM_DESCRIPTION = "item_description";
 
     private static final String DATABASE_CREATE_GAMES = "create table " +
@@ -38,7 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COLUMN_GAME_NAME + " text not null);";
 
     private static final String DATABASE_CREATE_SECTIONS = "create table " +
-            TABLE_SECTIONS + "(" + COLUMN_ID +
+            TABLE_SECTIONS + "(" + COLUMN_SECTION_ID +
             " integer primary key autoincrement, " +
             COLUMN_GAME_ID + " integer not null, " +
             COLUMN_SECTION_NAME + " text not null);";
@@ -49,11 +50,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COLUMN_SECTION_ID_ITEMS + " INTEGER NOT NULL, " +
             COLUMN_ITEM_NAME + " TEXT NOT NULL);";
 
-
     private static final String DATABASE_CREATE_ITEMS_DETAILS = "CREATE TABLE " +
-            TABLE_ITEMS_DETAILS + "(" + COLUMN_ITEM_ID_DETAILS +
+            TABLE_ITEMS_DETAILS + "(" + COLUMN_ITEM_DETAILS_ID +
             " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COLUMN_ITEM_ID + " INTEGER NOT NULL, " +
+            COLUMN_ITEM_DETAILS_ITEM_ID + " INTEGER NOT NULL, " + // Исправлено
             COLUMN_ITEM_DESCRIPTION + " TEXT NOT NULL);";
 
     public DatabaseHelper(Context context) {
@@ -66,6 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         database.execSQL(DATABASE_CREATE_SECTIONS);
         database.execSQL(DATABASE_CREATE_ITEMS);
         database.execSQL(DATABASE_CREATE_ITEMS_DETAILS);
+
         insertInitialData(database);
     }
 
@@ -178,17 +179,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String getItemDescription(long itemId) {
         SQLiteDatabase db = this.getReadableDatabase();
+        String itemDescription = null;
 
-        Cursor cursor = db.query(TABLE_ITEMS_DETAILS, new String[]{COLUMN_ITEM_DESCRIPTION},
-                COLUMN_ITEM_ID + "=?", new String[]{String.valueOf(itemId)}, null, null, null);
-
-        String description = "";
+        Cursor cursor = db.query(TABLE_ITEMS_DETAILS,
+                new String[]{COLUMN_ITEM_DESCRIPTION},
+                COLUMN_ITEM_DETAILS_ITEM_ID + "=?",
+                new String[]{String.valueOf(itemId)},
+                null, null, null);
 
         if (cursor.moveToFirst()) {
-            description = cursor.getString(cursor.getColumnIndex(COLUMN_ITEM_DESCRIPTION));
+            itemDescription = cursor.getString(cursor.getColumnIndex(COLUMN_ITEM_DESCRIPTION));
         }
-
         cursor.close();
-        return description;
+        return itemDescription;
     }
 }
